@@ -1,19 +1,3 @@
-/**
- * ============================================================================
- * PERSONAL EXPENSE VISUALIZATION BOARD
- * ============================================================================
- * Core Concepts Demonstrated for Faculty & Academic Evaluation:
- * 1. FORMS: Input gathering, validation, preventDefault, resets, error feedback
- * 2. STATE: Central state object as Single Source of Truth & LocalStorage sync
- * 3. DERIVED DATA: Dynamic calculation of totals, averages, percentages on-the-fly
- * 4. ARRAY METHODS: .reduce(), .filter(), .map(), .sort(), .find(), .forEach()
- * 5. REUSABLE CARDS: Modular template functions generating component cards
- * ============================================================================
- */
-
-// ============================================================================
-// 1. CONFIGURATION & CONSTANTS
-// ============================================================================
 const CATEGORY_CONFIG = {
   food: {
     id: 'food',
@@ -47,9 +31,7 @@ const CATEGORY_CONFIG = {
 
 const STORAGE_KEY = 'personal_expenses_data_v1';
 
-/**
- * Generates ISO date string for N days ago (used for initial sample data)
- */
+
 function getPastDateString(daysAgo) {
   const d = new Date();
   d.setDate(d.getDate() - daysAgo);
