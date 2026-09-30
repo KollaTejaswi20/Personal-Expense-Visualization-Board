@@ -1,13 +1,5 @@
-/* ============================================================
-   PERSONAL EXPENSE VISUALIZATION BOARD - STYLESHEET
-   - Pure CSS3 (No external CSS frameworks)
-   - Modular, Responsive (CSS Grid & Flexbox)
-   - Category-Specific Theming: Food, Travel, Education, Entertainment
-   ============================================================ */
 
-/* ==================== CSS VARIABLES / DESIGN TOKENS ==================== */
 :root {
-  /* Core Brand & Background Colors */
   --bg-primary: #f8fafc;
   --bg-surface: #ffffff;
   --bg-card: #ffffff;
@@ -17,25 +9,25 @@
   --border-color: #e2e8f0;
   --border-hover: #cbd5e1;
 
-  /* Primary Brand Theme */
+ 
   --primary: #2563eb;
   --primary-hover: #1d4ed8;
   --primary-light: #eff6ff;
 
-  /* Specific Category Color Codes */
-  --cat-food: #f97316;          /* Orange */
+  
+  --cat-food: #f97316;          
   --cat-food-bg: #fff7ed;
   --cat-food-border: #fed7aa;
 
-  --cat-travel: #0284c7;        /* Sky Blue */
+  --cat-travel: #0284c7;       
   --cat-travel-bg: #f0f9ff;
   --cat-travel-border: #bae6fd;
 
-  --cat-edu: #10b981;           /* Emerald Green */
+  --cat-edu: #10b981;           
   --cat-edu-bg: #ecfdf5;
   --cat-edu-border: #a7f3d0;
 
-  --cat-ent: #8b5cf6;           /* Purple/Violet */
+  --cat-ent: #8b5cf6;           
   --cat-ent-bg: #f5f3ff;
   --cat-ent-border: #ddd6fe;
 
@@ -62,7 +54,7 @@
   --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* ==================== BASE & RESET ==================== */
+
 * {
   margin: 0;
   padding: 0;
@@ -145,7 +137,7 @@ body {
   border: 1px solid var(--border-color);
 }
 
-/* ==================== MAIN LAYOUT ==================== */
+
 .dashboard-main {
   max-width: 1280px;
   margin: 0 auto;
@@ -155,7 +147,7 @@ body {
   gap: 1.5rem;
 }
 
-/* ==================== KPI SUMMARY METRICS ==================== */
+
 .metrics-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -234,7 +226,7 @@ body {
   color: #a855f7;
 }
 
-/* ==================== REUSABLE CATEGORY CARDS SECTION ==================== */
+
 .section-container {
   display: flex;
   flex-direction: column;
@@ -365,7 +357,7 @@ body {
   padding-top: 0.6rem;
 }
 
-/* ==================== DASHBOARD TWO COLUMNS ==================== */
+
 .dashboard-columns {
   display: grid;
   grid-template-columns: 380px 1fr;
@@ -421,7 +413,7 @@ body {
   color: #92400e;
 }
 
-/* ==================== FORM STYLES ==================== */
+
 .form-card {
   margin-bottom: 1.25rem;
 }
@@ -493,7 +485,7 @@ select.is-invalid {
   margin-top: 0.5rem;
 }
 
-/* ==================== BUTTONS ==================== */
+
 .btn {
   display: inline-flex;
   align-items: center;
@@ -585,7 +577,7 @@ select.is-invalid {
   gap: 0.5rem;
 }
 
-/* ==================== VISUAL SUMMARY & CHART ==================== */
+
 .visual-summary-card {
   margin-bottom: 1.5rem;
 }
@@ -709,7 +701,7 @@ select.is-invalid {
 .fill-education { background-color: var(--cat-edu); }
 .fill-entertainment { background-color: var(--cat-ent); }
 
-/* ==================== TRANSACTIONS & REUSABLE CARDS ==================== */
+
 .transactions-header {
   flex-wrap: wrap;
   gap: 1rem;
@@ -930,7 +922,7 @@ select.is-invalid {
   font-size: 0.85rem;
 }
 
-/* ==================== FACULTY VIVA EXPLANATION GUIDE ==================== */
+
 .viva-guide-card {
   background: #f8fafc;
   border: 2px solid #cbd5e1;
@@ -1014,7 +1006,7 @@ select.is-invalid {
   margin-top: 0.5rem;
 }
 
-/* ==================== TOAST NOTIFICATIONS ==================== */
+
 .toast-container {
   position: fixed;
   bottom: 1.5rem;
