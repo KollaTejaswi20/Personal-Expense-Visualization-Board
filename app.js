@@ -114,13 +114,7 @@ const SAMPLE_EXPENSES = [
   }
 ];
 
-// ============================================================================
-// 2. STATE MANAGEMENT (Concept: State)
-// ============================================================================
-/**
- * Single Source of Truth for the entire application.
- * All UI views reflect this central state.
- */
+
 let state = {
   expenses: loadExpensesFromStorage(),
   filterCategory: 'all',     // 'all' | 'food' | 'travel' | 'education' | 'entertainment'
@@ -128,10 +122,7 @@ let state = {
   sortBy: 'date-desc'        // 'date-desc' | 'date-asc' | 'amount-desc' | 'amount-asc'
 };
 
-/**
- * Loads saved state from browser localStorage or loads sample data on first run.
- * @returns {Array} Array of expense objects
- */
+
 function loadExpensesFromStorage() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -149,9 +140,7 @@ function loadExpensesFromStorage() {
   return [...SAMPLE_EXPENSES];
 }
 
-/**
- * Saves current expenses array to localStorage.
- */
+
 function saveExpensesToStorage() {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state.expenses));
@@ -160,33 +149,15 @@ function saveExpensesToStorage() {
   }
 }
 
-// ============================================================================
-// 3. DERIVED DATA & ARRAY METHODS (Concepts: Derived Data & Array Methods)
-// ============================================================================
-/**
- * Derived Data is NEVER stored directly in state. Instead, it is computed dynamically
- * whenever state.expenses changes. This guarantees zero state-synchronization bugs.
- */
 
-/**
- * Concept: Array.prototype.reduce()
- * Computes the grand total sum of all expenses.
- * @param {Array} expenseList
- * @returns {number}
- */
+
 function computeTotalAmount(expenseList) {
   const total = expenseList.reduce((accumulator, item) => accumulator + Number(item.amount), 0);
   console.log(`[Array Method: .reduce()] Grand Total computed: ₹${total.toFixed(2)} across ${expenseList.length} items.`);
   return total;
 }
 
-/**
- * Concept: Array.prototype.reduce() & Array.prototype.filter()
- * Aggregates statistics specifically for the 4 categories: food, travel, education, entertainment.
- * @param {Array} expenseList
- * @param {number} grandTotal
- * @returns {Object} Object keyed by category with amount, percentage, count
- */
+
 function computeCategoryBreakdown(expenseList, grandTotal) {
   const categories = Object.keys(CATEGORY_CONFIG); // ['food', 'travel', 'education', 'entertainment']
 
@@ -214,12 +185,7 @@ function computeCategoryBreakdown(expenseList, grandTotal) {
   return breakdown;
 }
 
-/**
- * Concept: Array.prototype.reduce() / Math.max
- * Derives the highest spending category based on computed subtotals.
- * @param {Object} categoryBreakdown
- * @returns {Object|null}
- */
+
 function deriveTopCategory(categoryBreakdown) {
   let topCat = null;
   let maxAmount = 0;
@@ -234,12 +200,6 @@ function deriveTopCategory(categoryBreakdown) {
   return topCat;
 }
 
-/**
- * Concept: Array.prototype.reduce()
- * Finds the single transaction with the highest expenditure.
- * @param {Array} expenseList
- * @returns {Object|null}
- */
 function deriveHighestSingleExpense(expenseList) {
   if (expenseList.length === 0) return null;
 
@@ -248,23 +208,13 @@ function deriveHighestSingleExpense(expenseList) {
   }, expenseList[0]);
 }
 
-/**
- * Concept: Derived Average
- * Computes average expense per transaction.
- * @param {number} total
- * @param {number} count
- * @returns {number}
- */
+
 function deriveAverageExpense(total, count) {
   if (count === 0) return 0;
   return total / count;
 }
 
-/**
- * Concept: Array.prototype.filter() and Array.prototype.sort()
- * Filters and sorts expenses for the transaction list view without mutating original state.
- * @returns {Array} Processed array ready for display
- */
+
 function getFilteredAndSortedExpenses() {
   let result = [...state.expenses];
 
@@ -303,16 +253,8 @@ function getFilteredAndSortedExpenses() {
   return result;
 }
 
-// ============================================================================
-// 4. REUSABLE CARD GENERATORS (Concept: Reusable Cards)
-// ============================================================================
 
-/**
- * Factory function for Category Overview Cards.
- * Takes a pure data object and returns consistent HTML markup.
- * @param {Object} data - Category breakdown info
- * @returns {string} HTML string
- */
+
 function createCategoryCard(data) {
   const { config, amount, percentage, count } = data;
   return `
@@ -333,12 +275,7 @@ function createCategoryCard(data) {
   `;
 }
 
-/**
- * Factory function for Individual Expense Transaction Cards.
- * Demonstrates reusable modular templating with dynamic badges and delete actions.
- * @param {Object} expense - Single expense item
- * @returns {string} HTML string
- */
+
 function createExpenseCard(expense) {
   const config = CATEGORY_CONFIG[expense.category] || {
     name: expense.category,
@@ -389,13 +326,7 @@ function createExpenseCard(expense) {
 // 5. VISUAL RENDERING (Concept: Visual Summaries & Charts)
 // ============================================================================
 
-/**
- * Renders the pure SVG Donut Chart dynamically without any external library.
- * Mathematics: Circumference = 2 * π * radius.
- * Each category gets an SVG circle slice using stroke-dasharray and stroke-dashoffset.
- * @param {Object} categoryBreakdown
- * @param {number} grandTotal
- */
+
 function renderDonutChart(categoryBreakdown, grandTotal) {
   const svg = document.getElementById('donut-chart');
   const centerAmountEl = document.getElementById('chart-center-total');
@@ -438,10 +369,6 @@ function renderDonutChart(categoryBreakdown, grandTotal) {
   });
 }
 
-/**
- * Renders percentage progress bars for Food, Travel, Education, Entertainment.
- * @param {Object} categoryBreakdown
- */
 function renderCategoryProgressBars(categoryBreakdown) {
   const container = document.getElementById('category-progress-bars');
   
@@ -477,9 +404,7 @@ function renderCategoryProgressBars(categoryBreakdown) {
   container.innerHTML = html;
 }
 
-/**
- * Orchestrates full UI rendering across all dashboard sections.
- */
+
 function renderDashboard() {
   console.log('[Render] Refreshing dashboard with latest state...');
 
@@ -520,17 +445,14 @@ function renderDashboard() {
     .map(data => createCategoryCard(data))
     .join('');
 
-  // 4. Render Visual Summaries (SVG Chart + Progress Bars)
+  
   renderDonutChart(categoryBreakdown, grandTotal);
   renderCategoryProgressBars(categoryBreakdown);
 
-  // 5. Render Filtered & Sorted Transaction Records
+  
   renderExpenseList();
 }
 
-/**
- * Renders the list of transactions applying active filters, search, and sorting.
- */
 function renderExpenseList() {
   const container = document.getElementById('expense-list-container');
   const countText = document.getElementById('transactions-count-text');
@@ -539,7 +461,6 @@ function renderExpenseList() {
   const visibleExpenses = getFilteredAndSortedExpenses();
   countText.textContent = `Showing ${visibleExpenses.length} of ${state.expenses.length} records`;
 
-  // Toggle filter banner
   const isFiltered = state.filterCategory !== 'all' || state.searchQuery.trim() !== '';
   if (isFiltered) {
     filterIndicator.style.display = 'flex';
@@ -562,31 +483,25 @@ function renderExpenseList() {
   container.innerHTML = visibleExpenses.map(expense => createExpenseCard(expense)).join('');
 }
 
-// ============================================================================
-// 6. FORM HANDLING & VALIDATION (Concept: Forms)
-// ============================================================================
 
-/**
- * Initializes form submission, validation, and control actions.
- */
 function setupFormHandling() {
   const form = document.getElementById('expense-form');
   const dateInput = document.getElementById('expense-date');
   const resetBtn = document.getElementById('btn-reset-form');
 
-  // Set default date to today's date in YYYY-MM-DD
+  
   const today = new Date().toISOString().split('T')[0];
   dateInput.value = today;
   dateInput.max = today; // Prevent future dates for daily expenses
 
-  // Display today's human-readable date in header badge
+  
   document.getElementById('current-date-badge').textContent = `Today: ${new Date().toLocaleDateString('en-IN', {
     day: 'numeric',
     month: 'short',
     year: 'numeric'
   })}`;
 
-  // Form Submit Event Handler
+ 
   form.addEventListener('submit', function (event) {
     // Crucial Concept: e.preventDefault() prevents browser page refresh
     event.preventDefault();
@@ -604,7 +519,7 @@ function setupFormHandling() {
     const payment = paymentEl.value;
     const notes = notesEl.value.trim();
 
-    // Validate inputs
+   
     let isValid = true;
     clearFormErrors();
 
@@ -635,7 +550,7 @@ function setupFormHandling() {
       return;
     }
 
-    // Create new expense object
+    
     const newExpense = {
       id: 'exp_' + Date.now(),
       title: title,
@@ -646,26 +561,26 @@ function setupFormHandling() {
       notes: notes
     };
 
-    // Update State (Concept: State Mutation & Immutability)
+    
     state.expenses = [newExpense, ...state.expenses];
 
-    // Persist to LocalStorage
+   
     saveExpensesToStorage();
 
-    // Re-render full dashboard to update Derived Data & Cards
+   
     renderDashboard();
 
-    // User Feedback
+    
     showToast(`Added: ₹${newExpense.amount.toFixed(2)} to ${CATEGORY_CONFIG[newExpense.category].name}`, 'success');
 
-    // Cleanly Reset Form
+   
     form.reset();
     dateInput.value = today;
     document.getElementById('expense-payment').value = 'UPI / Online';
     titleEl.focus();
   });
 
-  // Manual Reset Button
+  
   resetBtn.addEventListener('click', function () {
     clearFormErrors();
     form.reset();
@@ -689,15 +604,9 @@ function clearFormErrors() {
   });
 }
 
-// ============================================================================
-// 7. USER ACTIONS: DELETE, FILTERS & CONTROLS
-// ============================================================================
 
-/**
- * Concept: Array.prototype.filter() for deletion
- * Deletes an expense by its unique ID.
- * @param {string} id
- */
+
+
 window.handleDeleteExpense = function (id) {
   // Concept: Array.prototype.find() - locate target before deletion
   const itemToDelete = state.expenses.find(item => item.id === id);
@@ -709,41 +618,39 @@ window.handleDeleteExpense = function (id) {
   // Concept: Array.prototype.filter() - creates new array excluding deleted id
   state.expenses = state.expenses.filter(item => item.id !== id);
 
-  // Save updated state and re-render
+ 
   saveExpensesToStorage();
   renderDashboard();
 
   showToast(`Deleted "${itemToDelete.title}"`, 'danger');
 };
 
-/**
- * Sets up filters, search bar, sort select, and faculty guide toggle.
- */
+
 function setupFilterAndControls() {
   const searchInput = document.getElementById('search-input');
   const filterSelect = document.getElementById('filter-category-select');
   const sortSelect = document.getElementById('sort-select');
   const resetFiltersBtn = document.getElementById('btn-reset-filters');
 
-  // Search input handler with debounce
+  
   searchInput.addEventListener('input', function (e) {
     state.searchQuery = e.target.value;
     renderExpenseList();
   });
 
-  // Category filter select handler
+  
   filterSelect.addEventListener('change', function (e) {
     state.filterCategory = e.target.value;
     renderExpenseList();
   });
 
-  // Sort select handler
+ 
   sortSelect.addEventListener('change', function (e) {
     state.sortBy = e.target.value;
     renderExpenseList();
   });
 
-  // Reset Filters button
+  
   resetFiltersBtn.addEventListener('click', function () {
     state.filterCategory = 'all';
     state.searchQuery = '';
@@ -752,7 +659,7 @@ function setupFilterAndControls() {
     renderExpenseList();
   });
 
-  // Load Sample Data (Demo helper)
+  
   document.getElementById('btn-load-sample').addEventListener('click', function () {
     state.expenses = [...SAMPLE_EXPENSES];
     saveExpensesToStorage();
@@ -760,7 +667,7 @@ function setupFilterAndControls() {
     showToast('Loaded demo sample expenses!', 'info');
   });
 
-  // Clear All Data
+  
   document.getElementById('btn-clear-all').addEventListener('click', function () {
     if (state.expenses.length === 0) {
       showToast('No expenses to clear.', 'info');
@@ -777,13 +684,7 @@ function setupFilterAndControls() {
 
 }
 
-// ============================================================================
-// 8. UTILITIES & HELPERS
-// ============================================================================
 
-/**
- * Returns formatted date string (e.g. "28 Sep, 2026")
- */
 function formatDateDisplay(dateStr) {
   if (!dateStr) return '';
   const d = new Date(dateStr);
@@ -795,9 +696,7 @@ function formatDateDisplay(dateStr) {
 }
 
 
-/**
- * Prevents XSS injection when rendering user strings
- */
+
 function escapeHtml(str) {
   if (!str) return '';
   return str
@@ -808,9 +707,7 @@ function escapeHtml(str) {
     .replace(/'/g, '&#039;');
 }
 
-/**
- * Toast notifications for user feedback
- */
+
 function showToast(message, type = 'info') {
   const container = document.getElementById('toast-container');
   const toast = document.createElement('div');
@@ -829,9 +726,7 @@ function showToast(message, type = 'info') {
   }, 2800);
 }
 
-// ============================================================================
-// 9. INITIALIZATION
-// ============================================================================
+
 document.addEventListener('DOMContentLoaded', function () {
   console.log('🚀 Initializing Personal Expense Visualization Board...');
   setupFormHandling();
