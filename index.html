@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Personal Expense Visualization Board</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- ==================== HEADER ==================== -->
+  <header class="dashboard-header">
+    <div class="header-container">
+      <div class="brand">
+        <div class="brand-icon">💳</div>
+        <div>
+          <h1>Personal Expense Board</h1>
+          <p class="subtitle">Track, analyze, and visualize daily expenses by category</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <span class="date-badge" id="current-date-badge">Today: --</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== MAIN CONTENT ==================== -->
+  <main class="dashboard-main">
+
+    <!-- KPI / Top-Level Metric Summary Cards (Derived Data in action) -->
+    <section class="metrics-grid" aria-label="Key Performance Indicators">
+      <div class="metric-card total-metric">
+        <div class="metric-icon">💰</div>
+        <div class="metric-info">
+          <span class="metric-label">Total Expenses</span>
+          <span class="metric-value" id="kpi-total-amount">₹0.00</span>
+          <span class="metric-sub" id="kpi-total-count">0 transactions</span>
+        </div>
+      </div>
+
+      <div class="metric-card top-category-metric">
+        <div class="metric-icon">🏆</div>
+        <div class="metric-info">
+          <span class="metric-label">Highest Spending Category</span>
+          <span class="metric-value" id="kpi-top-category">None</span>
+          <span class="metric-sub" id="kpi-top-category-amount">₹0.00 spent</span>
+        </div>
+      </div>
+
+      <div class="metric-card avg-metric">
+        <div class="metric-icon">📊</div>
+        <div class="metric-info">
+          <span class="metric-label">Average Per Transaction</span>
+          <span class="metric-value" id="kpi-avg-amount">₹0.00</span>
+          <span class="metric-sub">Derived dynamically</span>
+        </div>
+      </div>
+
+      <div class="metric-card max-metric">
+        <div class="metric-icon">⚡</div>
+        <div class="metric-info">
+          <span class="metric-label">Highest Single Expense</span>
+          <span class="metric-value" id="kpi-max-amount">₹0.00</span>
+          <span class="metric-sub" id="kpi-max-title">None</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Category Visual Cards (Reusable Card Concept for 4 Main Categories) -->
+    <section class="section-container" aria-label="Category Overview">
+      <div class="section-header">
+        <h2>Category Overview</h2>
+        <span class="section-tag">Reusable Cards & Aggregation</span>
+      </div>
+      <div class="category-cards-grid" id="category-cards-container">
+        <!-- Rendered dynamically by JavaScript: Food, Travel, Education, Entertainment -->
+      </div>
+    </section>
+
+    <!-- Two Column Layout: Form on Left, Visual Chart & List on Right -->
+    <div class="dashboard-columns">
+      
+      <!-- LEFT COLUMN: Expense Entry Form & Budget Quick Actions -->
+      <aside class="dashboard-left">
+        <!-- FORM CONCEPT: User Expense Input Form -->
+        <div class="card form-card">
+          <div class="card-header">
+            <h3>➕ Add New Expense</h3>
+            <span class="badge badge-form">Form Input</span>
+          </div>
+
+          <form id="expense-form" novalidate>
+            <div class="form-group">
+              <label for="expense-title">Title / Description <span class="required">*</span></label>
+              <input 
+                type="text" 
+                id="expense-title" 
+                placeholder="e.g., Grocery shopping, Bus pass, Books" 
+                required 
+                maxlength="50"
+                autocomplete="off"
+              >
+              <small class="field-error" id="error-title"></small>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group half">
+                <label for="expense-amount">Amount (₹) <span class="required">*</span></label>
+                <input 
+                  type="number" 
+                  id="expense-amount" 
+                  placeholder="0.00" 
+                  min="0.01" 
+                  step="0.01" 
+                  required
+                >
+                <small class="field-error" id="error-amount"></small>
+              </div>
+
+              <div class="form-group half">
+                <label for="expense-category">Category <span class="required">*</span></label>
+                <select id="expense-category" required>
+                  <option value="" disabled selected>Select category</option>
+                  <option value="food">🍔 Food</option>
+                  <option value="travel">✈️ Travel</option>
+                  <option value="education">📚 Education</option>
+                  <option value="entertainment">🎬 Entertainment</option>
+                </select>
+                <small class="field-error" id="error-category"></small>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group half">
+                <label for="expense-date">Date <span class="required">*</span></label>
+                <input type="date" id="expense-date" required>
+                <small class="field-error" id="error-date"></small>
+              </div>
+
+              <div class="form-group half">
+                <label for="expense-payment">Payment Method</label>
+                <select id="expense-payment">
+                  <option value="UPI / Online">UPI / Online</option>
+                  <option value="Card">Debit / Credit Card</option>
+                  <option value="Cash">Cash</option>
+                  <option value="Net Banking">Net Banking</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="expense-notes">Notes / Tag (Optional)</label>
+              <input 
+                type="text" 
+                id="expense-notes" 
+                placeholder="e.g., Semester fees, Dinner with friends"
+                maxlength="60"
+              >
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary" id="btn-submit">
+                <span>Add Expense</span>
+              </button>
+              <button type="button" class="btn btn-outline" id="btn-reset-form">
+                Clear
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Quick Data Controls Card -->
+        <div class="card helper-card">
+          <div class="card-header">
+            <h4>⚙️ Board Controls</h4>
+          </div>
+          <p class="helper-desc">Easily inspect state behavior during demonstrations:</p>
+          <div class="button-group-vertical">
+            <button type="button" class="btn btn-secondary btn-sm" id="btn-load-sample">
+              🔄 Load Sample Data (Demo)
+            </button>
+            <button type="button" class="btn btn-danger-outline btn-sm" id="btn-clear-all">
+              🗑️ Clear All Expenses
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- RIGHT COLUMN: Visual Summaries and Reusable Expense List -->
+      <section class="dashboard-right">
+        
+        <!-- VISUAL SUMMARY: Charts and Distribution Bars -->
+        <div class="card visual-summary-card">
+          <div class="card-header">
+            <h3>📈 Visual Summary & Spending Breakdown</h3>
+            <span class="badge badge-derived">Derived Visuals</span>
+          </div>
+
+          <div class="visual-content">
+            <!-- Pure SVG Donut Chart (Zero external libraries) -->
+            <div class="chart-wrapper">
+              <div class="donut-chart-container">
+                <svg id="donut-chart" viewBox="0 0 100 100" class="donut-svg" aria-label="Category Spending Donut Chart">
+                  <circle class="donut-bg" cx="50" cy="50" r="38" />
+                  <!-- Dynamic SVG Segments will be injected here -->
+                </svg>
+                <div class="donut-center-text">
+                  <span class="donut-center-label">Total</span>
+                  <span class="donut-center-amount" id="chart-center-total">₹0</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Percentage Progress Bars for each category -->
+            <div class="progress-bars-container" id="category-progress-bars">
+              <!-- Dynamically populated with category percentage bars -->
+            </div>
+          </div>
+        </div>
+
+        <!-- REUSABLE CARDS & ARRAY METHODS: Transaction History with Filter and Search -->
+        <div class="card transactions-card">
+          <div class="card-header transactions-header">
+            <div>
+              <h3>📋 Expense Records</h3>
+              <p class="section-subtext" id="transactions-count-text">Showing 0 records</p>
+            </div>
+
+            <!-- Filtering & Sorting Controls (Array methods demo) -->
+            <div class="filters-toolbar">
+              <div class="search-input-wrapper">
+                <input 
+                  type="text" 
+                  id="search-input" 
+                  placeholder="🔍 Search title or notes..."
+                  autocomplete="off"
+                >
+              </div>
+
+              <select id="filter-category-select" aria-label="Filter by Category">
+                <option value="all">All Categories</option>
+                <option value="food">Food</option>
+                <option value="travel">Travel</option>
+                <option value="education">Education</option>
+                <option value="entertainment">Entertainment</option>
+              </select>
+
+              <select id="sort-select" aria-label="Sort Expenses">
+                <option value="date-desc">Latest First</option>
+                <option value="date-asc">Oldest First</option>
+                <option value="amount-desc">Amount: High to Low</option>
+                <option value="amount-asc">Amount: Low to High</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Active Filter Pill (if any) -->
+          <div class="active-filter-indicator" id="filter-indicator" style="display: none;">
+            <span>Filtered results active</span>
+            <button id="btn-reset-filters" class="btn-link">Reset Filters</button>
+          </div>
+
+          <!-- Reusable Expense Cards List Container -->
+          <div class="expense-list" id="expense-list-container">
+            <!-- Dynamically populated with reusable expense cards -->
+          </div>
+        </div>
+
+      </section>
+    </div>
+
+  </main>
+
+  <!-- ==================== TOAST NOTIFICATION CONTAINER ==================== -->
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+  <!-- JavaScript Application Entry -->
+  <script src="app.js"></script>
+</body>
+</html>
